@@ -6,7 +6,7 @@ title Upload portfolio to GitHub
 if /i "%~1"=="check" goto check
 
 echo ============================================
-echo   Upload portfolio to GitHub
+echo   Upload portfolio to GitHub  (SSH over 443)
 echo ============================================
 echo.
 set /p GHUSER=Your GitHub username: 
@@ -14,20 +14,31 @@ if not defined GHUSER goto nouser
 set REPO=warm-paw-portfolio
 
 echo.
-echo [1/3] Setting commit author...
+echo [1/4] Setting commit author...
 git config user.name "%GHUSER%"
 git config user.email "%GHUSER%@users.noreply.github.com"
 git commit --amend --reset-author --no-edit >nul 2>&1
 
-echo [2/3] Setting remote...
+echo [2/4] Setting SSH remote...
 git remote remove origin >nul 2>&1
-git remote add origin https://github.com/%GHUSER%/%REPO%.git
+git remote add origin git@github.com:%GHUSER%/%REPO%.git
 
-echo [3/3] Pushing...
-echo       GitHub login: browser window will pop up, click Authorize
+echo [3/4] Testing SSH login...
+ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15 -T git@github.com
+
+echo [4/4] Pushing...
+set ATTEMPT=0
+:retry
+set /a ATTEMPT+=1
 git push -u origin main
-if errorlevel 1 goto fail
+if not errorlevel 1 goto ok
+if %ATTEMPT% GEQ 3 goto fail
+echo.
+echo Retry %ATTEMPT% failed, waiting 3 seconds...
+timeout /t 3 /nobreak >nul
+goto retry
 
+:ok
 echo.
 echo DONE:
 echo   https://github.com/%GHUSER%/%REPO%
@@ -43,11 +54,10 @@ exit /b 1
 :fail
 echo.
 echo PUSH FAILED. Check these:
-echo   1. repo %REPO% exists on GitHub and is PUBLIC
-echo   2. repo was created WITHOUT README / gitignore / license
-echo   3. username typed correctly (copy it from the URL bar)
-echo   4. login popup was not cancelled
-echo   5. network: try again, or run the other platform script
+echo   1. SSH key added on GitHub: https://github.com/settings/keys
+echo   2. repo %REPO% exists and is PUBLIC
+echo   3. username typed correctly (copy from URL bar)
+echo   4. if SSH says Permission denied: the key was not added yet
 pause
 exit /b 1
 
@@ -56,5 +66,6 @@ echo [CHECK MODE] no push
 git --version
 git status --short --branch
 git remote -v
+ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=10 -T git@github.com
 pause
 exit /b 0
