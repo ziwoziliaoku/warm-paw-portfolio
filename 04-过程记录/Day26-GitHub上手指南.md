@@ -3,6 +3,8 @@
 > 日期：2026-11-05 晚（原计划 11-06）
 > 目标：把「成果归档」推上 GitHub，拿到一个**能发给 HR 的链接**
 > 预计用时：40 分钟（其中 10 分钟是注册账号）
+> **状态：✅ 已完成上线** — https://github.com/ziwoziliaoku/warm-paw-portfolio
+> 实际踩坑：注册风控 → 换网络；https 推送被阻断 → SSH over 443；密钥类型要选 Authentication Key。
 
 ---
 
