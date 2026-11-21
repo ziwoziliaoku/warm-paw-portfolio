@@ -365,7 +365,7 @@ def main():
     imgs = {
         "poster_autumn": prep_image(ART / "秋日海报-v2-修正版.png"),
         "poster_winter": prep_image(ART / "冬日海报-v1.png"),
-        "poster_minimal": prep_image(ART / "即梦出图-极简雪绒-v1.png"),
+        "poster_minimal": prep_image(ART / "即梦出图-极简雪绒-v1-修复版.png"),
         "pack_autumn": prep_image(ART / "秋日包装展示板-v1.png"),
         "pack_winter": prep_image(ART / "冬日包装展示板-v1.png"),
         "pack_display": prep_image(ART / "包装陈列-v1.png"),
